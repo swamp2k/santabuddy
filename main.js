@@ -8,6 +8,9 @@ const fs = require('fs');
 let win = null;
 let tray = null;
 
+// testing: NISSE_USERDATA=some-folder keeps a test run's settings away from the real nisse
+if (process.env.NISSE_USERDATA) app.setPath('userData', process.env.NISSE_USERDATA);
+
 if (!app.requestSingleInstanceLock()) {
   app.quit();
 }
@@ -101,6 +104,11 @@ function setStartWithWindows(on) {
 }
 function syncAutostart() {
   if (process.argv.includes('--dev')) return;
+  // installed by pcwatch: a scheduled task starts him at login, so no Run key of our own
+  if (managed) {
+    if (startsWithWindows()) app.setLoginItemSettings({ ...loginItem(), openAtLogin: false });
+    return;
+  }
   let pref = 'on';
   try { pref = fs.readFileSync(prefFile(), 'utf8').trim(); } catch {}
   setStartWithWindows(pref !== 'off');
@@ -129,13 +137,60 @@ function buildTray() {
         ],
       },
       { type: 'separator' },
-      { label: 'Start with Windows', type: 'checkbox', checked: startsWithWindows(), click: (item) => setStartWithWindows(item.checked) },
+      ...(managed ? [] : [{ label: 'Start with Windows', type: 'checkbox', checked: startsWithWindows(), click: (item) => setStartWithWindows(item.checked) }]),
       { label: 'Reload', click: () => win && win.reload() },
       { label: 'Quit', click: () => app.quit() },
     ])
   );
   tray.on('click', () => send('wardrobe'));
 }
+
+// ---------- pcwatch ----------
+// When pcwatch installs him it writes C:\ProgramData\Nisse\buddy.json
+// ({ worker_url, token }). He then checks in about once a minute: reports what
+// he's wearing/doing, gets his settings and any lines queued on the dashboard.
+// No config file = he just runs on his own, as before. (NISSE_CONFIG=path to test.)
+function readManaged() {
+  const file = process.env.NISSE_CONFIG || path.join(process.env.ProgramData || 'C:\\ProgramData', 'Nisse', 'buddy.json');
+  try {
+    const c = JSON.parse(fs.readFileSync(file, 'utf8').replace(/^\uFEFF/, ''));
+    return typeof c.worker_url === 'string' && /^https?:\/\//.test(c.worker_url) && typeof c.token === 'string' ? c : null;
+  } catch {
+    return null;
+  }
+}
+const managed = readManaged();
+let remoteStatus = null;
+let remoteAcks = [];
+let remoteTimer = null;
+
+async function syncRemote() {
+  clearTimeout(remoteTimer);
+  if (!managed) return;
+  let next = 60;
+  const acks = remoteAcks.slice();
+  try {
+    const res = await fetch(managed.worker_url.replace(/\/$/, '') + '/api/buddy/sync', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${managed.token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ version: app.getVersion(), status: remoteStatus, ack: acks }),
+      signal: AbortSignal.timeout(20000),
+    });
+    if (res.ok) {
+      const data = await res.json();
+      remoteAcks = remoteAcks.filter((id) => !acks.includes(id));
+      if (win) win.webContents.send('remote', { settings: data.settings, messages: data.messages || [] });
+      next = Math.min(600, Math.max(20, Number(data.poll_seconds) || 60));
+    } else {
+      next = res.status === 401 ? 900 : 120; // removed on the dashboard, or server trouble
+    }
+  } catch {
+    next = 120; // offline: he carries on as a normal nisse
+  }
+  remoteTimer = setTimeout(syncRemote, next * 1000);
+}
+ipcMain.on('remote-status', (_e, status) => { remoteStatus = status && typeof status === 'object' ? status : null; });
+ipcMain.on('remote-said', (_e, id) => { if (typeof id === 'string' && !remoteAcks.includes(id)) remoteAcks.push(id); });
 
 ipcMain.on('set-clickable', (_e, on) => {
   if (win) win.setIgnoreMouseEvents(!on, { forward: true });
@@ -165,6 +220,7 @@ app.whenReady().then(() => {
   createWindow();
   syncAutostart();
   buildTray();
+  if (managed) win.webContents.once('did-finish-load', () => setTimeout(syncRemote, 8000));
 });
 app.on('second-instance', () => send('come'));
 app.on('window-all-closed', () => app.quit());

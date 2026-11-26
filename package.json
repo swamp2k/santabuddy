@@ -1,12 +1,13 @@
 {
   "name": "balders-nisse",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "A little Christmas buddy that lives on Balder's desktop",
   "main": "main.js",
   "private": true,
   "scripts": {
     "start": "electron .",
-    "dev": "electron . --dev"
+    "dev": "electron . --dev",
+    "package": "node tools/package.js"
   },
   "dependencies": {
     "electron": "^39.0.0"

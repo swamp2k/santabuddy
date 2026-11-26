@@ -103,3 +103,23 @@ template) and reload from the tray. A trick can:
 Pose fields (set them in an action's `update`): `bob tilt sx sy pivotX pivotY
 legL legR head headY sit breathe lookX eyeOpen expr hatSway` (pivots in 512
 container px). Expressions: `normal happy laugh surprised sleep dizzy`.
+
+## On the cousins' PCs (pcwatch)
+
+pcwatch installs and runs the nisse on other family PCs (the 🎅 Buddy tab on
+each PC's page). Getting a new version out:
+
+1. Bump `version` in `package.json`, then `npm run package`. That builds
+   `dist/Nisse-win-x64.zip` (Electron renamed to `Nisse.exe`, the app in
+   `resources/app`).
+2. Make a GitHub Release on this repo and attach that zip. pcwatch always
+   downloads `releases/latest/download/Nisse-win-x64.zip`.
+3. Press **Update** on each PC's Buddy tab.
+
+A pcwatch install writes `C:\ProgramData\Nisse\buddy.json`. When that file
+exists the nisse checks in with pcwatch about once a minute (`main.js` +
+`renderer/remote.js`): he reports what he's wearing and doing, picks up name,
+size and chattiness from the dashboard, and says any queued lines in his own
+speech bubble a little while later. Without the file (like here) he never
+contacts anything. Testing: `NISSE_CONFIG=path\to\buddy.json` and
+`NISSE_USERDATA=some\folder` (keeps the test's settings apart from the real ones).
