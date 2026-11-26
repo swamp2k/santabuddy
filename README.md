@@ -9,6 +9,15 @@ Double-click `start-nisse.bat`, or run `npm start`. (`npm run dev` prints his
 console to the terminal and saves `snapshot.png` after 5 seconds.)
 
 Quit or reload him from the tray icon (the little nisse face by the clock).
+He starts with Windows (switched on the first time he runs; untick
+**Start with Windows** in the tray menu to stop that).
+
+If something seems broken, run `npm run dev`: everything he logs, including
+errors with the file and line, goes to `dev.log`. A trick that crashes is
+switched off and logged, and he keeps going. If the whole page crashes he
+reloads himself.
+
+Before changing art or code, `git commit -am "before ..."` so you can go back.
 
 ## Playing with him
 
