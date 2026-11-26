@@ -5,8 +5,9 @@ the taskbar, talks, dances, naps, and can be dressed up.
 
 ## Run it
 
-Double-click `start-nisse.bat`, or run `npm start`. (`npm run dev` prints his
-console to the terminal and saves `snapshot.png` after 5 seconds.)
+Double-click `start-nisse.bat`, or run `npm start`. (`npm run dev` writes his
+console to `dev.log` and saves `snapshot.png` after 5 seconds; add
+`-- --snap=3000,8000` for snapshots at other times.)
 
 Quit or reload him from the tray icon (the little nisse face by the clock).
 He starts with Windows (switched on the first time he runs; untick
@@ -35,11 +36,25 @@ The **wardrobe** has hats (nisse hat, wool hat, Lucia crown, antlers), a
 scarf, and things to hold (lantern, rice pudding, present). The ✨ tab triggers
 tricks and ⚙️ has name, size, chattiness and a random outfit.
 
+### Built-in mischief (in `renderer/tricks/`)
+
+- **Advent stocking** (`advent-stocking.js`): a stocking in the bottom-right
+  corner has a present every day. Click it: he runs over, shakes it, and
+  unwraps it. Inside is that day's calendar entry, or a random surprise on
+  other days. `Buddy.stocking.reset()` puts today's present back (for testing).
+- **Rice pudding** (`porridge.js`): after 20 minutes he gets hungry and asks
+  for it. Give him the bowl in the wardrobe and he eats it bite by bite.
+- **Peekaboo** (`peekaboo.js`): he sneaks off the edge of the screen and peeks
+  back in. Move the mouse close or click him: BOO! He does it more when
+  nobody has fed him for 40 minutes.
+
 ### December calendar
 
 [`renderer/calendar.json`](renderer/calendar.json) is keyed by December date
-(`"12-13"`). Each day he wears the latest entry on or before today, and says its
-`say` line once. If Balder dresses him by hand, that sticks until the next day.
+(`"12-13"`). Each day he wears the latest entry on or before today. A new
+entry's outfit and `say` line come out of that day's present in the stocking.
+Add `"do": "dance"` (any action name) to make him do something when it's opened.
+If Balder dresses him by hand, that sticks until the next day.
 
 ## How it's built
 

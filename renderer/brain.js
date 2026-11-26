@@ -86,7 +86,7 @@
     const ground = B.ground(), m = B.margin();
     if (!S.airborne) {
       S.y = ground;
-      S.x = B.clamp(S.x, m, B.width() - m);
+      if (!S.noWalls) S.x = B.clamp(S.x, m, B.width() - m); // an action may hide him past the edge
       return;
     }
     S.vy += G * dt;

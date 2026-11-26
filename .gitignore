@@ -1,4 +1,4 @@
 node_modules/
-snapshot.png
+snapshot*.png
 __pycache__/
 dev.log

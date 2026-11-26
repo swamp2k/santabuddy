@@ -59,11 +59,17 @@ function createWindow() {
 `);
     });
     win.webContents.on('preload-error', (_e, p, err) => console.log('[preload error]', p, err));
-    setTimeout(async () => {
-      const img = await win.webContents.capturePage();
-      fs.writeFileSync(path.join(__dirname, 'snapshot.png'), img.toPNG());
-      console.log('[dev] snapshot saved');
-    }, 5000);
+    // --snap=3000,6500 takes snapshot-3000.png etc. (default: one at 5 s)
+    const snapArg = process.argv.find((a) => a.startsWith('--snap='));
+    const times = snapArg ? snapArg.slice(7).split(',').map(Number) : [5000];
+    for (const t of times) {
+      setTimeout(async () => {
+        const img = await win.webContents.capturePage();
+        const name = snapArg ? `snapshot-${t}.png` : 'snapshot.png';
+        fs.writeFileSync(path.join(__dirname, name), img.toPNG());
+        console.log('[dev] saved', name);
+      }, t);
+    }
   }
 
   // if the page ever crashes or hangs, bring him back instead of leaving an invisible window
