@@ -51,13 +51,9 @@ tricks and ⚙️ has name, size, chattiness and a random outfit.
 - **Advent wreath** (`advent-wreath.js`): appears bottom-left on the 1st
   Advent Sunday. Each Advent Sunday he walks over and lights the next candle
   (he catches up if the PC was off). Lit candles burn a little shorter every day.
-- **Letters from Santa** (`santa-letter.js` + [`renderer/letters.json`](renderer/letters.json)):
-  on a letter's date an envelope floats down and he asks Balder to open it.
-  It keeps coming back until it's read (up to 6 days late). Read it again
-  from the ✨ tab. Add a letter = add a date to `letters.json`.
 
 Testing another day: in a trick, `Buddy.today = () => new Date(2026, 11, 6)`.
-`Buddy.advent.reset()` and `Buddy.letters.reset()` put the candles/letters back.
+`Buddy.advent.reset()` puts the candles back.
 
 ### December calendar
 
