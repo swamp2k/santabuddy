@@ -92,15 +92,18 @@ function send(command) {
 // it would open the plain Electron demo window at login.
 const loginItem = () => ({ path: process.execPath, args: [app.getAppPath()] });
 const startsWithWindows = () => app.getLoginItemSettings(loginItem()).openAtLogin;
+// The choice is saved in userData ('on'/'off', default on). Every start
+// re-registers the current folder, so moving the project doesn't break it.
+const prefFile = () => path.join(app.getPath('userData'), 'autostart');
 function setStartWithWindows(on) {
   app.setLoginItemSettings({ ...loginItem(), openAtLogin: on, name: 'Nisse' });
+  fs.writeFileSync(prefFile(), on ? 'on' : 'off');
 }
-// switched on the first time he runs; after that the tray checkbox decides
-function firstRunAutostart() {
-  const flag = path.join(app.getPath('userData'), 'autostart-set');
-  if (fs.existsSync(flag) || process.argv.includes('--dev')) return;
-  setStartWithWindows(true);
-  fs.writeFileSync(flag, new Date().toISOString());
+function syncAutostart() {
+  if (process.argv.includes('--dev')) return;
+  let pref = 'on';
+  try { pref = fs.readFileSync(prefFile(), 'utf8').trim(); } catch {}
+  setStartWithWindows(pref !== 'off');
 }
 
 function buildTray() {
@@ -160,7 +163,7 @@ ipcMain.handle('list-tricks', () => {
 
 app.whenReady().then(() => {
   createWindow();
-  firstRunAutostart();
+  syncAutostart();
   buildTray();
 });
 app.on('second-instance', () => send('come'));

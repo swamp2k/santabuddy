@@ -10,7 +10,7 @@ console to `dev.log` and saves `snapshot.png` after 5 seconds; add
 `-- --snap=3000,8000` for snapshots at other times.)
 
 Quit or reload him from the tray icon (the little nisse face by the clock).
-He starts with Windows (switched on the first time he runs; untick
+He starts with Windows (on by default, and it follows the folder if you move it; untick
 **Start with Windows** in the tray menu to stop that).
 
 If something seems broken, run `npm run dev`: everything he logs, including
