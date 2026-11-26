@@ -1,0 +1,4 @@
+node_modules/
+snapshot.png
+__pycache__/
+dev.log

@@ -1,0 +1,13 @@
+{
+  "_help": "Keyed by December date (MM-DD). On each day he wears the most recent entry on or before today. hat / neck / hand are item ids from wardrobe.js ('none' = nothing). 'say' is said once when he wakes up that day. {kid} = Balder, {sleeps} = sleeps until Christmas Eve.",
+  "12-01": { "hat": "hat-santa", "neck": "scarf", "hand": "none", "say": "December is here! Only {sleeps} sleeps until Christmas Eve!" },
+  "12-03": { "hat": "hat-wool", "neck": "scarf", "hand": "lantern", "say": "It gets dark so early... good thing I have my lantern!" },
+  "12-06": { "hat": "hat-santa", "neck": "none", "hand": "present", "say": "I found a present! Is it for you, {kid}?" },
+  "12-09": { "hat": "antlers", "neck": "scarf", "hand": "none", "say": "Today I'm a reindeer! Have you seen my sleigh?" },
+  "12-13": { "hat": "lucia-crown", "neck": "none", "hand": "none", "say": "Happy Lucia day! Look at my candles!" },
+  "12-14": { "hat": "hat-wool", "neck": "scarf", "hand": "none" },
+  "12-16": { "hat": "hat-wool", "neck": "scarf", "hand": "porridge", "say": "Rice pudding! With a BIG lump of butter!" },
+  "12-20": { "hat": "antlers", "neck": "none", "hand": "lantern", "say": "Only {sleeps} sleeps left, {kid}!" },
+  "12-23": { "hat": "hat-santa", "neck": "scarf", "hand": "porridge", "say": "Little Christmas Eve! Porridge time!" },
+  "12-24": { "hat": "hat-santa", "neck": "scarf", "hand": "present", "say": "IT'S CHRISTMAS EVE!!! Glædelig jul, {kid}!" }
+}

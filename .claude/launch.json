@@ -1,0 +1,14 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "nisse-preview",
+      "runtimeExecutable": "node",
+      "runtimeArgs": [
+        "C:\\Users\\martin\\AppData\\Local\\Temp\\claude\\c655e3e97b5d24bd\\a5185e7f-b27c-4645-bace-ab124fb6b085\\scratchpad\\serve.js",
+        "C:\\Users\\martin\\AppData\\Local\\Claude-Data\\claude_pzs8sxrjxfjjc\\scratch-workspaces\\7e4348b8-a087-4e0c-83dc-cb24227652cb\\7664d10e-a97b-4f4d-af09-31f749993e9a\\scratch-2026-11-25-26ae65\\renderer"
+      ],
+      "port": 5178
+    }
+  ]
+}
